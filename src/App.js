@@ -117,20 +117,20 @@ const App = () => {
   }, []);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container max-w-6xl mx-auto p-4">
       <div className="flex justify-center mb-4">
-        <button className="bg-green-500 text-white p-2 m-1 rounded" onClick={startSimulation} disabled={running}>
+        <button className="bg-blue-400 text-white p-2 m-1 rounded border border-blue-500 hover:bg-blue-300 hover:shadow-md  transition-all active:shadow-none active:bg-blue-400" onClick={startSimulation} disabled={running}>
           Play
         </button>
-        <button className="bg-red-500 text-white p-2 m-1 rounded" onClick={stopSimulation} disabled={!running}>
+        <button className="bg-blue-300 text-white p-2 m-1 rounded border border-gray-500 hover:bg-gray-300 hover:shadow-md  transition-all active:shadow-none active:bg-gray-400" onClick={stopSimulation} disabled={!running}>
           Stop
         </button>
-        <div className="p-2 m-1 rounded bg-gray-200 w-s flex-grow-0 text-center">
+        <div className="p-2 m-1 rounded bg-gray-200 w-[75px] flex-grow-0 text-center">
           {currentTime}
         </div>
       </div>
       <DopamineChart data={data} markers={markers} currentTime={currentTime} />
-      <div className="flex flex-wrap justify-center mt-4">
+      <div className="flex flex-wrap justify-center mt-4 bg-slate-100 rounded-md p-3">
         {Object.entries(activities).map(([label, change]) => (
           <ActivityButton
             key={label}
