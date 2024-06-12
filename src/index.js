@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './index.css';
 import App from './App';
+import AppV4 from './v4/AppV4'; // Import the new component
+import AppV3 from './v3/AppV3'; // Import the
 import AppV2 from './v2/AppV2'; // Import the new component
 import reportWebVitals from './reportWebVitals';
 
@@ -13,6 +15,8 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} /> {/* This will be rendered at the path '/' */}
         <Route path="/chart" element={<AppV2 />} /> {/*This will be rendered at the path '/chart'*/}
+        <Route path="/chart3" element={<AppV3 />} /> {/*This will be rendered at the path '/chart'*/}
+        <Route path="/chart4" element={<AppV4 />} /> {/*This will be rendered at the path '/chart'*/}
       </Routes>
     </Router>
   </React.StrictMode>
