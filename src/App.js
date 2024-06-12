@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import DopamineChart from './components/DopamineChart';
 import ActivityButton from './components/ActivityButton';
-import generateData from './utility';
+import  {generateData}  from './utility';
 
 const baseline = 100;
 const activities = {
