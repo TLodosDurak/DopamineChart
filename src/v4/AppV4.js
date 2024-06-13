@@ -1,50 +1,70 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import ActivityIcon from './ActivityIcon';
+import { ReactComponent as MealIcon } from './meal-svgrepo-com.svg'; // Import the SVG icon
 
 const baseline = 100;
 const activities = {
-  meal: { change: 15, peakDuration: 50, halfDuration: 50, quarterDuration: 50 },
-  snack: { change: 5, peakDuration: 25, halfDuration: 25, quarterDuration: 25 },
-  gym: { change: 30, peakDuration: 100, halfDuration: 120, quarterDuration: 80 },
-  lightExercise: { change: 10, peakDuration: 50, halfDuration: 50, quarterDuration: 30 },
-  friends: { change: 20, peakDuration: 100, halfDuration: 50, quarterDuration: 30 },
-  talk: { change: 15, peakDuration: 75, halfDuration: 50, quarterDuration: 15 },
-  instrument: { change: 25, peakDuration: 75, halfDuration: 75, quarterDuration: 30 },
-  book: { change: 10, peakDuration: 50, halfDuration: 40, quarterDuration: 30 },
-  task: { change: 20, peakDuration: 100, halfDuration: 60, quarterDuration: 30 },
-  praise: { change: 25, peakDuration: 75, halfDuration: 20, quarterDuration: 30 },
-  shower: { change: 5, peakDuration: 50, halfDuration: 50, quarterDuration: 25 },
-  cleaning: { change: 5, peakDuration: 50, halfDuration: 75, quarterDuration: 25 },
-  smoking: { change: 20, peakDuration: 75, halfDuration: 125, quarterDuration: 30 },
-  alcohol: { change: 15, peakDuration: 100, halfDuration: 90, quarterDuration: 30 },
-  sugar: { change: 10, peakDuration: 70, halfDuration: 60, quarterDuration: 20 },
-  drugs: { change: 30, peakDuration: 125, halfDuration: 200, quarterDuration: 75 },
-  stress: { change: -15, peakDuration: 75, halfDuration: 100, quarterDuration: 30 },
-  argue: { change: -20, peakDuration: 50, halfDuration: 100, quarterDuration: 15 },
-  bingeWatch: { change: 10, peakDuration: 100, halfDuration: 75, quarterDuration: 30 },
-  gaming: { change: 15, peakDuration: 150, halfDuration: 70, quarterDuration: 30 },
+  meal: { change: 15, peakDuration: 50, halfDuration: 50, quarterDuration: 50, icon: <MealIcon /> },
+  snack: { change: 5, peakDuration: 25, halfDuration: 25, quarterDuration: 25, icon: <MealIcon /> },
+  gym: { change: 30, peakDuration: 100, halfDuration: 120, quarterDuration: 80, icon: <MealIcon /> },
+  lightExercise: { change: 10, peakDuration: 50, halfDuration: 50, quarterDuration: 30, icon: <MealIcon /> },
+  friends: { change: 20, peakDuration: 100, halfDuration: 50, quarterDuration: 30, icon: <MealIcon /> },
+  talk: { change: 15, peakDuration: 75, halfDuration: 50, quarterDuration: 15, icon: <MealIcon /> },
+  instrument: { change: 25, peakDuration: 75, halfDuration: 75, quarterDuration: 30, icon: <MealIcon /> },
+  book: { change: 10, peakDuration: 50, halfDuration: 40, quarterDuration: 30, icon: <MealIcon /> },
+  task: { change: 20, peakDuration: 100, halfDuration: 60, quarterDuration: 30, icon: <MealIcon /> },
+  praise: { change: 25, peakDuration: 75, halfDuration: 20, quarterDuration: 30, icon: <MealIcon /> },
+  shower: { change: 5, peakDuration: 50, halfDuration: 50, quarterDuration: 25, icon: <MealIcon /> },
+  cleaning: { change: 5, peakDuration: 50, halfDuration: 75, quarterDuration: 25, icon: <MealIcon /> },
+  smoking: { change: 20, peakDuration: 75, halfDuration: 125, quarterDuration: 30, icon: <MealIcon /> },
+  alcohol: { change: 15, peakDuration: 100, halfDuration: 90, quarterDuration: 30, icon: <MealIcon /> },
+  sugar: { change: 10, peakDuration: 70, halfDuration: 60, quarterDuration: 20, icon: <MealIcon /> },
+  drugs: { change: 30, peakDuration: 125, halfDuration: 200, quarterDuration: 75, icon: <MealIcon /> },
+  stress: { change: -15, peakDuration: 75, halfDuration: 100, quarterDuration: 30, icon: <MealIcon /> },
+  argue: { change: -20, peakDuration: 50, halfDuration: 100, quarterDuration: 15, icon: <MealIcon /> },
+  bingeWatch: { change: 10, peakDuration: 100, halfDuration: 75, quarterDuration: 30, icon: <MealIcon /> },
+  gaming: { change: 15, peakDuration: 150, halfDuration: 70, quarterDuration: 30, icon: <MealIcon /> },
 };
 
 const AppV4 = () => {
   const [events, setEvents] = useState([]);
+  const [simulationTime, setSimulationTime] = useState(new Date().setHours(7, 0, 0, 0));
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1);
+  const [mode, setMode] = useState('full'); // 'full' or 'simulation'
   const svgRef = useRef(null);
   const width = 800;
   const height = 400;
   const margin = { top: 20, right: 30, bottom: 100, left: 40 };
+
+  useEffect(() => {
+    let interval;
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setSimulationTime((prevTime) => {
+          const newTime = new Date(prevTime).getTime() + 5 * 60 * 1000 * speed;
+          return new Date(newTime).getTime();
+        });
+      }, 1000);
+    } else if (!isPlaying && interval) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying, speed]);
 
   const addEvent = (activity, time) => {
     const newEvent = { time: new Date(time), activity };
     setEvents((prevEvents) => [...prevEvents, newEvent]);
   };
 
-  const calculateDopamineLevels = () => {
+  const calculateDopamineLevels = (endTime) => {
     const data = [];
     const timeStart = new Date();
     timeStart.setHours(7, 0, 0, 0);
     const timeEnd = new Date(timeStart);
     timeEnd.setHours(24, 0, 0, 0);
-    const timeIntervals = d3.timeMinute.range(timeStart, timeEnd, 5);
+    const timeIntervals = d3.timeMinute.range(timeStart, endTime || timeEnd, 5);
 
     timeIntervals.forEach((time) => {
       let dopamine = baseline;
@@ -75,7 +95,7 @@ const AppV4 = () => {
   };
 
   const updateChart = () => {
-    const data = calculateDopamineLevels();
+    const data = mode === 'simulation' ? calculateDopamineLevels(simulationTime) : calculateDopamineLevels();
     const svg = d3.select(svgRef.current);
 
     const xScale = d3.scaleTime()
@@ -148,7 +168,7 @@ const AppV4 = () => {
 
   useEffect(() => {
     updateChart();
-  }, [events]);
+  }, [events, simulationTime, mode]);
 
   return (
     <div className="container max-w-6xl mx-auto p-4 ">
@@ -157,17 +177,40 @@ const AppV4 = () => {
           Dopamine Baseline Chart
         </h1>
       </div>
+      <div className="flex justify-center mb-4">
+        <button className="mr-4" onClick={() => setMode(mode === 'full' ? 'simulation' : 'full')}>
+          Switch to {mode === 'full' ? 'Simulation' : 'Full'} Mode
+        </button>
+        {mode === 'simulation' && (
+          <>
+            <button className="mr-4" onClick={() => setIsPlaying(!isPlaying)}>
+              {isPlaying ? 'Stop' : 'Play'}
+            </button>
+            <button className="mr-4" onClick={() => setSpeed(prevSpeed => prevSpeed + 1)}>
+              Speed Up
+            </button>
+            <button onClick={() => setSpeed(prevSpeed => Math.max(1, prevSpeed - 1))}>
+              Slow Down
+            </button>
+            <div className="ml-4">
+              <span>Current Time: {new Date(simulationTime).toLocaleTimeString()}</span>
+            </div>
+          </>
+        )}
+      </div>
       <div className="flex justify-center">
         <svg ref={svgRef} width={width} height={height}></svg>
       </div>
       <div className="max-w-2xl mx-auto bg-rose-200 rounded-lg flex justify-center mb-4 p-3 flex-wrap">
         {Object.entries(activities).map(([label, activity]) => (
-          <ActivityIcon
-            key={label}
-            label={label}
-            activity={activity}
-            onDrop={addEvent}
-          />
+          <div key={label} className="flex flex-col items-center">
+            <ActivityIcon
+              label={label}
+              activity={activity}
+              onDrop={addEvent}
+            />
+            <span>{label}</span>
+          </div>
         ))}
       </div>
     </div>

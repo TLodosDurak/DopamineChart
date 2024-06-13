@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
+import './icon-wrapper.css';
+
 
 const ActivityIcon = ({ label, activity, onDrop }) => {
   const iconRef = useRef(null);
@@ -21,9 +23,10 @@ const ActivityIcon = ({ label, activity, onDrop }) => {
   }, [activity, onDrop]);
 
   return (
-    <div ref={iconRef} className="bg-red-500 text-white text-center justify-center flex w-[40px] h-[40px] p-2 m-2 rounded-full cursor-pointer flex-shrink-0 *
-                                     hover:bg-red-700 hover:shadow-md hover:scale-150 transition-all active:shadow-none active:bg-red-500">
-      {label}
+    <div ref={iconRef} className="bg-red-500 text-white text-center justify-center flex w-[40px] h-[40px] p-2 m-2 rounded-full cursor-pointer flex-shrink-0 hover:bg-red-700 hover:shadow-md hover:scale-150 transition-all active:shadow-none active:bg-red-500">
+      <div className="icon-wrapper">
+        {activity.icon}
+        </div>
     </div>
   );
 };
