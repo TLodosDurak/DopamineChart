@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import ActivityButton from '../components/ActivityButton';
+import ActivityIcon from './ActivityIcon';
 
 const baseline = 100;
 const activities = {
   meal: { change: 15, duration: 3 },
   snack: { change: 5, duration: 2 },
   gym: { change: 30, duration: 4 },
-  lightExercise: { change: 10, duration: 30 },
+  lightExercise: { change: 10, duration: 3 },
   friends: { change: 20, duration: 4 },
   talk: { change: 15, duration: 3 },
   instrument: { change: 25, duration: 4 },
@@ -31,17 +31,11 @@ const AppV4 = () => {
   const svgRef = useRef(null);
   const width = 800;
   const height = 400;
-  const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+  const margin = { top: 20, right: 30, bottom: 50, left: 40 };
 
-  const addEvent = (activity) => {
-    const currentTime = new Date();
-    currentTime.setHours(7, 0, 0, 0);
-    const newEvent = { time: new Date(currentTime), activity };
+  const addEvent = (activity, time) => {
+    const newEvent = { time: new Date(time), activity };
     setEvents((prevEvents) => [...prevEvents, newEvent]);
-  };
-
-  const removeEvent = (index) => {
-    setEvents((prevEvents) => prevEvents.filter((_, i) => i !== index));
   };
 
   const calculateDopamineLevels = () => {
@@ -57,8 +51,10 @@ const AppV4 = () => {
       events.forEach(({ time: eventTime, activity }) => {
         const startTime = new Date(eventTime);
         const endTime = new Date(startTime.getTime() + activity.duration * 5 * 60 * 1000);
-        if (time >= startTime && time < endTime) {
-          dopamine += activity.change;
+        if (time >= startTime && time <= endTime) {
+          const t = (time - startTime) / (endTime - startTime);
+          const easedT = d3.easeCubic(t);
+          dopamine += activity.change * easedT;
         }
       });
       data.push({ time, dopamine });
@@ -104,22 +100,39 @@ const AppV4 = () => {
     svg.selectAll('.event')
       .data(events)
       .enter()
-      .append('line')
+      .append('g')
       .attr('class', 'event')
-      .attr('x1', d => xScale(d.time))
-      .attr('x2', d => xScale(d.time))
-      .attr('y1', margin.top)
-      .attr('y2', height - margin.bottom)
-      .attr('stroke', 'red')
-      .attr('stroke-width', 2)
-      .call(d3.drag()
-        .on('drag', function (event, d) {
-          const newTime = xScale.invert(d3.pointer(event)[0]);
-          d3.select(this).attr('x1', xScale(newTime)).attr('x2', xScale(newTime));
-          d.time = newTime;
-          setEvents([...events]);
-        })
-      );
+      .call(g => {
+        g.append('line')
+          .attr('x1', d => xScale(d.time))
+          .attr('x2', d => xScale(d.time))
+          .attr('y1', margin.top)
+          .attr('y2', height - margin.bottom)
+          .attr('stroke', 'red')
+          .attr('stroke-width', 2);
+
+        g.append('circle')
+          .attr('cx', d => xScale(d.time))
+          .attr('cy', height - margin.bottom + 20)
+          .attr('r', 15)
+          .attr('fill', 'red')
+          .call(d3.drag()
+            .on('drag', function (event, d) {
+              const newTime = xScale.invert(d3.pointer(event)[0]);
+              d3.select(this).attr('cx', xScale(newTime));
+              d3.select(this.parentNode).select('line').attr('x1', xScale(newTime)).attr('x2', xScale(newTime));
+              d.time = newTime;
+              setEvents([...events]);
+            })
+          );
+
+        g.append('text')
+          .attr('x', d => xScale(d.time))
+          .attr('y', height - margin.bottom + 25)
+          .attr('text-anchor', 'middle')
+          .attr('fill', 'white')
+          .text(d => d.activity.label);
+      });
   };
 
   useEffect(() => {
@@ -127,17 +140,20 @@ const AppV4 = () => {
   }, [events]);
 
   return (
-    <div className="container max-w-6xl mx-auto p-4">
-      <div className="flex justify-center mb-4">
-        {Object.entries(activities).map(([label, activity]) => (
-          <ActivityButton
-            key={label}
-            label={label}
-            onClick={() => addEvent(activity)}
-          />
-        ))}
-      </div>
-      <svg ref={svgRef} width={width} height={height}></svg>
+    <div className="container max-w-6xl mx-auto p-4 ">
+        <div className="max-w-2xl mx-auto bg-rose-200 rounded-lg flex justify-center mb-4 p-3 flex-wrap">
+            {Object.entries(activities).map(([label, activity]) => (
+            <ActivityIcon
+                key={label}
+                label={label}
+                activity={activity}
+                onDrop={addEvent}
+            />
+            ))}
+        </div>
+        <div className="flex justify-center">
+            <svg ref={svgRef} width={width} height={height}></svg>
+        </div>
     </div>
   );
 };
