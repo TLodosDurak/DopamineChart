@@ -11,7 +11,7 @@ const ActivityIcon = ({ label, activity, onDrop }) => {
         const coords = d3.pointer(event, svg.node());
         const timeScale = d3.scaleTime()
           .domain([new Date().setHours(7, 0, 0, 0), new Date().setHours(24, 0, 0, 0)])
-          .range([0, 800]); // Update range based on your chart width
+          .range([0, svg.node().getBoundingClientRect().width]); // Update range based on your chart width
 
         const dropTime = timeScale.invert(coords[0]);
         onDrop(activity, dropTime);
