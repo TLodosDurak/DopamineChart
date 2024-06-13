@@ -1,4 +1,3 @@
-import { Chart } from 'chart.js';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
 
@@ -8,14 +7,14 @@ const ChartV4 = ({ data, markers, currentTime }) => {
 
   return (
     <ResponsiveContainer width="100%" height={400}>
-      <LineChart data={data}
+      <LineChart data={data.filter(d => d.visible)}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time" />
-        <YAxis domain={[0, 250]} />
+        <XAxis dataKey="time" interval={36} label={{ value: "Time", position: "insideBottomRight", offset: -5 }} />
+        <YAxis domain={[60, 200]} label={{ value: "Dopamine Levels", angle: -90, position: 'insideLeft' }} />
         <Tooltip />
         <Legend />
-        <ReferenceArea x1="1 AM" x2="7 AM" strokeOpacity={0.3} />
+        <ReferenceLine y={baseline} stroke="lightblue" label={{ position: 'insideRight', value: 'Baseline', fill: 'lightblue' }} />
 
         {markers.map((marker, index) => (
           <ReferenceLine key={index} x={marker} stroke="rgba(0,0,0,0.2)" />
