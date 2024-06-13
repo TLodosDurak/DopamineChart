@@ -31,7 +31,7 @@ const AppV4 = () => {
   const svgRef = useRef(null);
   const width = 800;
   const height = 400;
-  const margin = { top: 20, right: 30, bottom: 50, left: 40 };
+  const margin = { top: 20, right: 30, bottom: 100, left: 40 };
 
   const addEvent = (activity, time) => {
     const newEvent = { time: new Date(time), activity };
@@ -113,7 +113,7 @@ const AppV4 = () => {
 
         g.append('circle')
           .attr('cx', d => xScale(d.time))
-          .attr('cy', height - margin.bottom + 20)
+          .attr('cy', height - margin.bottom + 40)
           .attr('r', 15)
           .attr('fill', 'red')
           .call(d3.drag()
@@ -139,23 +139,28 @@ const AppV4 = () => {
     updateChart();
   }, [events]);
 
-  return (
+return (
     <div className="container max-w-6xl mx-auto p-4 ">
-        <div className="max-w-2xl mx-auto bg-rose-200 rounded-lg flex justify-center mb-4 p-3 flex-wrap">
-            {Object.entries(activities).map(([label, activity]) => (
-            <ActivityIcon
-                key={label}
-                label={label}
-                activity={activity}
-                onDrop={addEvent}
-            />
-            ))}
+        <div className="flex justify-center">
+            <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-red-500 to-pink-500 text-transparent bg-clip-text">
+                Dopamine Baseline Chart
+            </h1>
         </div>
         <div className="flex justify-center">
             <svg ref={svgRef} width={width} height={height}></svg>
         </div>
+        <div className="max-w-2xl mx-auto bg-rose-200 rounded-lg flex justify-center mb-4 p-3 flex-wrap">
+            {Object.entries(activities).map(([label, activity]) => (
+                <ActivityIcon
+                    key={label}
+                    label={label}
+                    activity={activity}
+                    onDrop={addEvent}
+                />
+            ))}
+        </div>
     </div>
-  );
+);
 };
 
 export default AppV4;
