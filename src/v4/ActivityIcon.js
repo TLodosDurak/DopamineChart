@@ -17,7 +17,7 @@ const ActivityIcon = ({ label, activity, onDrop }) => {
         const svgWidth = svg.node().getBoundingClientRect().width;
         const margin = { left: 30, right: 30 }; // match with AppV4 margin
         const timeScale = d3.scaleTime()
-          .domain([new Date().setHours(7, 0, 0, 0), new Date().setHours(24, 0, 0, 0)])
+          .domain([new Date().setHours(7, 0, 0, 0), new Date().setHours(31, 0, 0, 0)])
           .range([margin.left, svgWidth - margin.right]);
         //x_cord has to be between margin.left and svgWidth - margin.right
         const x_cord = Math.min(Math.max(coords[0], margin.left), svgWidth - margin.right);

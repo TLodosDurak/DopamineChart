@@ -149,7 +149,7 @@ const AppV4 = () => {
           .attr('fill', '#4444EF')
           .call(d3.drag()
             .on('drag', function (event, d) {
-              const coords = d3.pointer(event);
+              const coords = d3.pointer(event, svg.node());
               const boundedX = Math.max(margin.left, Math.min(coords[0], width - margin.right));
               const newTime = xScale.invert(boundedX);
               d3.select(this).attr('cx', xScale(newTime));
