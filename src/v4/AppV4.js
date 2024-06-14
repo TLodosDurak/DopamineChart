@@ -34,8 +34,8 @@ const AppV4 = () => {
   const [speed, setSpeed] = useState(1);
   const [mode, setMode] = useState('full'); // 'full' or 'simulation'
   const svgRef = useRef(null);
-  const width = 800;
-  const height = 400;
+  const width = window.innerWidth * 0.9;
+  const height = window.innerHeight * 0.6;
   const margin = { top: 20, right: 30, bottom: 100, left: 30 };
 
   useEffect(() => {
@@ -84,7 +84,7 @@ const AppV4 = () => {
             dopamine += activity.change * (1 - 0.5 * d3.easeCircleIn(t));
           } else if (time <= quarterEndTime) {
             t = (time - halfEndTime) / (quarterEndTime - halfEndTime);
-            dopamine += activity.change * (0.5 - 0.25 * d3.easeSinInOut(t)) - baseline * 0.15 * d3.easeSinInOut(t);
+            dopamine += activity.change * (0.5 - 0.25 * d3.easeSinInOut(t)) - baseline * Math.sign(activity.change) * 0.15 * d3.easeSinInOut(t);
           }
         }
       });
@@ -215,7 +215,7 @@ const AppV4 = () => {
                 activity={activity}
                 onDrop={addEvent}
                 />
-                <span>{label}</span>
+                <span className="text-sm md:text-base">{label}</span>
             </div>
             ))}
         </div>    
@@ -225,3 +225,4 @@ const AppV4 = () => {
 };
 
 export default AppV4;
+
