@@ -36,7 +36,7 @@ const AppV4 = () => {
   const svgRef = useRef(null);
   const width = 800;
   const height = 400;
-  const margin = { top: 20, right: 30, bottom: 100, left: 40 };
+  const margin = { top: 20, right: 30, bottom: 100, left: 30 };
 
   useEffect(() => {
     let interval;
@@ -124,7 +124,7 @@ const AppV4 = () => {
     svg.append('path')
       .datum(data)
       .attr('fill', 'none')
-      .attr('stroke', 'steelblue')
+      .attr('stroke', '#4444EF')
       .attr('stroke-width', 3)
       .attr('d', line);
 
@@ -139,17 +139,19 @@ const AppV4 = () => {
           .attr('x2', d => xScale(d.time))
           .attr('y1', margin.top)
           .attr('y2', height - margin.bottom)
-          .attr('stroke', 'red')
+          .attr('stroke', '#4444EF')
           .attr('stroke-width', 0.5);
 
         g.append('circle')
           .attr('cx', d => xScale(d.time))
           .attr('cy', height - margin.bottom + 40)
           .attr('r', 15)
-          .attr('fill', 'red')
+          .attr('fill', '#4444EF')
           .call(d3.drag()
             .on('drag', function (event, d) {
-              const newTime = xScale.invert(d3.pointer(event)[0]);
+              const coords = d3.pointer(event);
+              const boundedX = Math.max(margin.left, Math.min(coords[0], width - margin.right));
+              const newTime = xScale.invert(boundedX);
               d3.select(this).attr('cx', xScale(newTime));
               d3.select(this.parentNode).select('line').attr('x1', xScale(newTime)).attr('x2', xScale(newTime));
               d.time = newTime;
@@ -171,9 +173,9 @@ const AppV4 = () => {
   }, [events, simulationTime, mode]);
 
   return (
-    <div className="container max-w-6xl mx-auto p-4 ">
+    <div className="container max-w-6xl mx-auto p-4">
       <div className="flex justify-center">
-        <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-red-500 to-pink-500 text-transparent bg-clip-text">
+        <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-500 to-cyan-500 text-transparent bg-clip-text">
           Dopamine Baseline Chart
         </h1>
       </div>
@@ -201,18 +203,23 @@ const AppV4 = () => {
       <div className="flex justify-center">
         <svg ref={svgRef} width={width} height={height}></svg>
       </div>
-      <div className="max-w-2xl mx-auto bg-rose-200 rounded-lg flex justify-center mb-4 p-3 flex-wrap">
-        {Object.entries(activities).map(([label, activity]) => (
-          <div key={label} className="flex flex-col items-center">
-            <ActivityIcon
-              label={label}
-              activity={activity}
-              onDrop={addEvent}
-            />
-            <span>{label}</span>
-          </div>
-        ))}
-      </div>
+      <div className="max-w-2xl mx-auto bg-white rounded-lg justify-center mb-4 p-8 border-2 border-[#4444EF]">
+        <h1 className="text-2xl font-bold text-start bg-gradient-to-r from-blue-500 to-cyan-500 text-transparent bg-clip-text box-border mb-4">
+          Stimuli
+        </h1>
+        <div className='flex flex-wrap'>
+            {Object.entries(activities).map(([label, activity]) => (
+            <div key={label} className="flex flex-col items-center">
+                <ActivityIcon
+                label={label}
+                activity={activity}
+                onDrop={addEvent}
+                />
+                <span>{label}</span>
+            </div>
+            ))}
+        </div>    
+        </div>
     </div>
   );
 };
