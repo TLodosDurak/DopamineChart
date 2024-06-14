@@ -34,9 +34,26 @@ const AppV4 = () => {
   const [speed, setSpeed] = useState(1);
   const [mode, setMode] = useState('full'); // 'full' or 'simulation'
   const svgRef = useRef(null);
-  const width = window.innerWidth * 0.9;
-  const height = window.innerHeight * 0.6;
+
+
+  const updateDimensions = () => {
+    const width = Math.min(window.innerWidth * 0.9, 1120); // ensure it doesn't exceed 1120px
+    const height = window.innerHeight * 0.6;
+    return { width, height };
+  };
+
+  const [dimensions, setDimensions] = useState(updateDimensions());
   const margin = { top: 20, right: 30, bottom: 100, left: 30 };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions(updateDimensions());
+      updateChart();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -100,11 +117,11 @@ const AppV4 = () => {
 
     const xScale = d3.scaleTime()
       .domain(d3.extent(data, d => d.time))
-      .range([margin.left, width - margin.right]);
+      .range([margin.left, dimensions.width - margin.right]);
 
     const yScale = d3.scaleLinear()
       .domain([50, 200])
-      .range([height - margin.bottom, margin.top]);
+      .range([dimensions.height - margin.bottom, margin.top]);
 
     const line = d3.line()
       .x(d => xScale(d.time))
@@ -114,7 +131,7 @@ const AppV4 = () => {
     svg.selectAll('*').remove();
 
     svg.append('g')
-      .attr('transform', `translate(0,${height - margin.bottom})`)
+      .attr('transform', `translate(0,${dimensions.height - margin.bottom})`)
       .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(1)).tickFormat(d3.timeFormat('%I %p')));
 
     svg.append('g')
@@ -138,19 +155,19 @@ const AppV4 = () => {
           .attr('x1', d => xScale(d.time))
           .attr('x2', d => xScale(d.time))
           .attr('y1', margin.top)
-          .attr('y2', height - margin.bottom)
+          .attr('y2', dimensions.height - margin.bottom)
           .attr('stroke', '#4444EF')
           .attr('stroke-width', 0.5);
 
         g.append('circle')
           .attr('cx', d => xScale(d.time))
-          .attr('cy', height - margin.bottom + 40)
+          .attr('cy', dimensions.height - margin.bottom + 40)
           .attr('r', 15)
           .attr('fill', '#4444EF')
           .call(d3.drag()
             .on('drag', function (event, d) {
               const coords = d3.pointer(event, svg.node());
-              const boundedX = Math.max(margin.left, Math.min(coords[0], width - margin.right));
+              const boundedX = Math.max(margin.left, Math.min(coords[0], dimensions.width - margin.right));
               const newTime = xScale.invert(boundedX);
               d3.select(this).attr('cx', xScale(newTime));
               d3.select(this.parentNode).select('line').attr('x1', xScale(newTime)).attr('x2', xScale(newTime));
@@ -161,7 +178,7 @@ const AppV4 = () => {
 
         g.append('text')
           .attr('x', d => xScale(d.time))
-          .attr('y', height - margin.bottom + 25)
+          .attr('y', dimensions.height - margin.bottom + 25)
           .attr('text-anchor', 'middle')
           .attr('fill', 'white')
           .text(d => d.activity.label);
@@ -170,7 +187,7 @@ const AppV4 = () => {
 
   useEffect(() => {
     updateChart();
-  }, [events, simulationTime, mode]);
+  }, [events, simulationTime, mode, dimensions]);
 
   return (
     <div className="container max-w-6xl mx-auto p-4">
@@ -201,7 +218,7 @@ const AppV4 = () => {
         )}
       </div>
       <div className="flex justify-center">
-        <svg ref={svgRef} width={width} height={height}></svg>
+        <svg ref={svgRef} width={dimensions.width} height={dimensions.height}></svg>
       </div>
       <div className="max-w-2xl mx-auto bg-white rounded-lg justify-center mb-4 p-8 border-2 border-[#4444EF]">
         <h1 className="text-2xl font-bold text-start bg-gradient-to-r from-blue-500 to-cyan-500 text-transparent bg-clip-text box-border mb-4">
@@ -225,4 +242,3 @@ const AppV4 = () => {
 };
 
 export default AppV4;
-
