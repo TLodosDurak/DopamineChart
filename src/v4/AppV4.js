@@ -63,7 +63,7 @@ const AppV4 = () => {
     const timeStart = new Date();
     timeStart.setHours(7, 0, 0, 0);
     const timeEnd = new Date(timeStart);
-    timeEnd.setHours(24, 0, 0, 0);
+    timeEnd.setHours(31, 0, 0, 0);
     const timeIntervals = d3.timeMinute.range(timeStart, endTime || timeEnd, 5);
 
     timeIntervals.forEach((time) => {
@@ -115,7 +115,7 @@ const AppV4 = () => {
 
     svg.append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
-      .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(3)).tickFormat(d3.timeFormat('%I %p')));
+      .call(d3.axisBottom(xScale).ticks(d3.timeHour.every(1)).tickFormat(d3.timeFormat('%I %p')));
 
     svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)

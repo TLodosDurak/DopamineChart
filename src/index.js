@@ -13,10 +13,10 @@ root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<App />} /> {/* This will be rendered at the path '/' */}
-        <Route path="/chart" element={<AppV2 />} /> {/*This will be rendered at the path '/chart'*/}
+        <Route path="/chart1" element={<App />} /> {/* This will be rendered at the path '/chart1' */}
+        <Route path="/chart2" element={<AppV2 />} /> {/*This will be rendered at the path '/chart'*/}
         <Route path="/chart3" element={<AppV3 />} /> {/*This will be rendered at the path '/chart'*/}
-        <Route path="/chart4" element={<AppV4 />} /> {/*This will be rendered at the path '/chart'*/}
+        <Route path="/" element={<AppV4 />} /> {/*This will be rendered at the path '/'*/}
       </Routes>
     </Router>
   </React.StrictMode>
