@@ -28,7 +28,7 @@ const ActivityIcon = ({ label, activity, onDrop }) => {
       <div className="icon-wrapper mb-2">
         {activity.icon}
       </div>
-      <div className=" justify-center flex leading-3">
+      <div className=" justify-center flex leading-[14px]">
         {activity.label}
       </div>
 
