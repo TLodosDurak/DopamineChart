@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import ActivityIcon from './ActivityIcon';
 import { ReactComponent as MealIcon } from './meal-svgrepo-com.svg'; // Import the SVG icon
+import ReactDOMServer from 'react-dom/server';
+import './icon-wrapper.css';
+import './event-icon-wrapper.css'
 
 const baseline = 100;
 const activities = {
@@ -160,7 +163,6 @@ const AppV4 = () => {
       .attr('transform', `translate(0,${dimensions.height - margin.bottom})`)
       .call(d3.axisBottom(xScale).ticks(tickValues.length).tickFormat(d3.timeFormat('%I %p')));
   
-  
     // Add thin marks for each hour without labels
     const allHourTicks = xScale.ticks(d3.timeHour.every(1));
     allHourTicks.forEach(tick => {
@@ -180,7 +182,7 @@ const AppV4 = () => {
       .attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(yScale));
   
-    // Draw the events
+    // Draw the events with icons or text
     svg.selectAll('.event')
       .data(events)
       .enter()
@@ -195,31 +197,43 @@ const AppV4 = () => {
           .attr('stroke', '#4444EF')
           .attr('stroke-width', 0.5);
   
-        g.append('circle')
-          .attr('cx', d => xScale(d.time))
-          .attr('cy', dimensions.height - margin.bottom + 40)
-          .attr('r', 15)
-          .attr('fill', '#4444EF')
+        const eventGroup = g.append('g')
+          .attr('transform', d => `translate(${xScale(d.time)}, ${dimensions.height - margin.bottom + 40})`)
+          .attr('justify-content', 'center')
           .call(d3.drag()
             .on('drag', function (event, d) {
               const coords = d3.pointer(event, svg.node());
               const boundedX = Math.max(margin.left, Math.min(coords[0], dimensions.width - margin.right));
               const newTime = xScale.invert(boundedX);
-              d3.select(this).attr('cx', xScale(newTime));
+              d3.select(this).attr('transform', `translate(${xScale(newTime)}, ${dimensions.height - margin.bottom + 40})`);
               d3.select(this.parentNode).select('line').attr('x1', xScale(newTime)).attr('x2', xScale(newTime));
               d.time = newTime;
               setEvents([...events]);
             })
           );
   
-        g.append('text')
-          .attr('x', d => xScale(d.time))
-          .attr('y', dimensions.height - margin.bottom + 25)
-          .attr('text-anchor', 'middle')
-          .attr('fill', 'white')
+        eventGroup.append('circle')
+          .attr('r', 15)
+          .attr('fill', '#4444EF');
+  
+        eventGroup.append('foreignObject')
+          .attr('x', -15)
+          .attr('y', -15)
+          .attr('width', 30)
+          .attr('height', 30)
+          .attr('class', 'justify-center items-center')
+          .append('xhtml:div')
+          .attr('class', 'event-icon-wrapper h-[30px] w-[30px] flex justify-center items-center')
+          .html(d => ReactDOMServer.renderToString(d.activity.icon || <span>{d.activity.label}</span>));
+          
+  
+        eventGroup.append('title')
           .text(d => d.activity.label);
       });
   };
+  
+  
+  
   
 
   useEffect(() => {
