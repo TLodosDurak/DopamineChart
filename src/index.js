@@ -8,14 +8,15 @@ import AppV3 from './v3/AppV3'; // Import the
 import AppV2 from './v2/AppV2'; // Import the new component
 import reportWebVitals from './reportWebVitals';
 
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/chart1" element={<App />} /> {/* This will be rendered at the path '/chart1' */}
-        <Route path="/chart2" element={<AppV2 />} /> {/*This will be rendered at the path '/chart'*/}
-        <Route path="/chart3" element={<AppV3 />} /> {/*This will be rendered at the path '/chart'*/}
+        {/*<Route path="/chart1" element={<App />} /> {/* This will be rendered at the path '/chart1' 
+        <Route path="/chart2" element={<AppV2 />} /> {/*This will be rendered at the path '/chart'
+        <Route path="/chart3" element={<AppV3 />} /> This will be rendered at the path '/chart'*/}
         <Route path="/" element={<AppV4 />} /> {/*This will be rendered at the path '/'*/}
       </Routes>
     </Router>

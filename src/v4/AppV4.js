@@ -271,7 +271,7 @@ const AppV4 = () => {
   }, [events, simulationTime, mode, dimensions]);
 
   return (
-    <div className="container max-w-6xl mx-auto p-4 justify-center min-w-[320px] lg:max-w-full">
+    <div className="container max-w-6xl mx-auto p-4 justify-center min-w-[320px] ">
       <div className="flex justify-center">
         <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-500 to-cyan-500 text-transparent bg-clip-text">
           Dopamine Baseline Chart
