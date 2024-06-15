@@ -4,31 +4,31 @@ import ActivityIcon from './ActivityIcon';
 import { ReactComponent as MealIcon } from './meal-svgrepo-com.svg'; // Import the SVG icon
 import ReactDOMServer from 'react-dom/server';
 import './icon-wrapper.css';
-import './event-icon-wrapper.css'
 
 const baseline = 100;
 const activities = {
-  meal: { change: 15, peakDuration: 50, halfDuration: 50, quarterDuration: 50, icon: <MealIcon /> },
-  snack: { change: 5, peakDuration: 25, halfDuration: 25, quarterDuration: 25, icon: <MealIcon /> },
-  gym: { change: 30, peakDuration: 100, halfDuration: 120, quarterDuration: 80, icon: <MealIcon /> },
-  lightExercise: { change: 10, peakDuration: 50, halfDuration: 50, quarterDuration: 30, icon: <MealIcon /> },
-  friends: { change: 20, peakDuration: 100, halfDuration: 50, quarterDuration: 30, icon: <MealIcon /> },
-  talk: { change: 15, peakDuration: 75, halfDuration: 50, quarterDuration: 15, icon: <MealIcon /> },
-  instrument: { change: 25, peakDuration: 75, halfDuration: 75, quarterDuration: 30, icon: <MealIcon /> },
-  book: { change: 10, peakDuration: 50, halfDuration: 40, quarterDuration: 30, icon: <MealIcon /> },
-  task: { change: 20, peakDuration: 100, halfDuration: 60, quarterDuration: 30, icon: <MealIcon /> },
-  praise: { change: 25, peakDuration: 75, halfDuration: 20, quarterDuration: 30, icon: <MealIcon /> },
-  shower: { change: 5, peakDuration: 50, halfDuration: 50, quarterDuration: 25, icon: <MealIcon /> },
-  cleaning: { change: 5, peakDuration: 50, halfDuration: 75, quarterDuration: 25, icon: <MealIcon /> },
-  smoking: { change: 20, peakDuration: 75, halfDuration: 125, quarterDuration: 30, icon: <MealIcon /> },
-  alcohol: { change: 15, peakDuration: 100, halfDuration: 90, quarterDuration: 30, icon: <MealIcon /> },
-  sugar: { change: 10, peakDuration: 70, halfDuration: 60, quarterDuration: 20, icon: <MealIcon /> },
-  drugs: { change: 30, peakDuration: 125, halfDuration: 200, quarterDuration: 75, icon: <MealIcon /> },
-  stress: { change: -15, peakDuration: 75, halfDuration: 100, quarterDuration: 30, icon: <MealIcon /> },
-  argue: { change: -20, peakDuration: 50, halfDuration: 100, quarterDuration: 15, icon: <MealIcon /> },
-  bingeWatch: { change: 10, peakDuration: 100, halfDuration: 75, quarterDuration: 30, icon: <MealIcon /> },
-  gaming: { change: 15, peakDuration: 150, halfDuration: 70, quarterDuration: 30, icon: <MealIcon /> },
-};
+    meal: { label: 'Meal', change: 15, peakDuration: 50, halfDuration: 50, quarterDuration: 50, icon: <MealIcon /> },
+    snack: { label: 'Snack', change: 5, peakDuration: 25, halfDuration: 25, quarterDuration: 25, icon: <MealIcon /> },
+    gym: { label: 'Gym', change: 30, peakDuration: 100, halfDuration: 120, quarterDuration: 80, icon: <MealIcon /> },
+    lightExercise: { label: 'Light Exercise', change: 10, peakDuration: 50, halfDuration: 50, quarterDuration: 30, icon: <MealIcon /> },
+    friends: { label: 'Friends', change: 20, peakDuration: 100, halfDuration: 50, quarterDuration: 30, icon: <MealIcon /> },
+    talk: { label: 'Talk', change: 15, peakDuration: 75, halfDuration: 50, quarterDuration: 15, icon: <MealIcon /> },
+    instrument: { label: 'Instrument', change: 25, peakDuration: 75, halfDuration: 75, quarterDuration: 30, icon: <MealIcon /> },
+    book: { label: 'Book', change: 10, peakDuration: 50, halfDuration: 40, quarterDuration: 30, icon: <MealIcon /> },
+    task: { label: 'Task', change: 20, peakDuration: 100, halfDuration: 60, quarterDuration: 30, icon: <MealIcon /> },
+    praise: { label: 'Praise', change: 25, peakDuration: 75, halfDuration: 20, quarterDuration: 30, icon: <MealIcon /> },
+    shower: { label: 'Shower', change: 5, peakDuration: 50, halfDuration: 50, quarterDuration: 25, icon: <MealIcon /> },
+    cleaning: { label: 'Cleaning', change: 5, peakDuration: 50, halfDuration: 75, quarterDuration: 25, icon: <MealIcon /> },
+    smoking: { label: 'Smoking', change: 20, peakDuration: 75, halfDuration: 125, quarterDuration: 30, icon: <MealIcon /> },
+    alcohol: { label: 'Alcohol', change: 15, peakDuration: 100, halfDuration: 90, quarterDuration: 30, icon: <MealIcon /> },
+    sugar: { label: 'Sugar', change: 10, peakDuration: 70, halfDuration: 60, quarterDuration: 20, icon: <MealIcon /> },
+    drugs: { label: 'Drugs', change: 30, peakDuration: 125, halfDuration: 200, quarterDuration: 75, icon: <MealIcon /> },
+    stress: { label: 'Stress', change: -15, peakDuration: 75, halfDuration: 100, quarterDuration: 30, icon: <MealIcon /> },
+    argue: { label: 'Argue', change: -20, peakDuration: 50, halfDuration: 100, quarterDuration: 15, icon: <MealIcon /> },
+    bingeWatch: { label: 'Binge Watch', change: 10, peakDuration: 100, halfDuration: 75, quarterDuration: 30, icon: <MealIcon /> },
+    gaming: { label: 'Gaming', change: 15, peakDuration: 150, halfDuration: 70, quarterDuration: 30, icon: <MealIcon /> },
+  };
+  
 
 const AppV4 = () => {
   const [events, setEvents] = useState([]);
@@ -129,26 +129,32 @@ const AppV4 = () => {
 
     return data;
   };
-
   const updateChart = () => {
     const data = mode === 'simulation' ? calculateDopamineLevels(simulationTime) : calculateDopamineLevels();
     const svg = d3.select(svgRef.current);
-  
+    
+    // Create a single tooltip
+    const tooltip = d3.select('body').selectAll('.tooltip').data([null]);
+    const tooltipEnter = tooltip.enter().append('div').attr('class', 'tooltip').style('opacity', 0);
+    tooltip.exit().remove();
+    
+    const mergedTooltip = tooltip.merge(tooltipEnter);
+    
     const xScale = d3.scaleTime()
       .domain(d3.extent(data, d => d.time))
       .range([margin.left, dimensions.width - margin.right]);
-  
+    
     const yScale = d3.scaleLinear()
       .domain([50, 200])
       .range([dimensions.height - margin.bottom, margin.top]);
-  
+    
     const line = d3.line()
       .x(d => xScale(d.time))
       .y(d => yScale(d.dopamine))
       .curve(d3.curveBasis);
-  
+    
     svg.selectAll('*').remove();
-  
+    
     // Draw the main line chart
     svg.append('path')
       .datum(data)
@@ -156,13 +162,13 @@ const AppV4 = () => {
       .attr('stroke', '#4444EF')
       .attr('stroke-width', 3)
       .attr('d', line);
-  
+    
     // Draw the x-axis with thicker lines for each hour
     const tickValues = xScale.ticks(d3.timeHour.every(tickInterval));
     svg.append('g')
       .attr('transform', `translate(0,${dimensions.height - margin.bottom})`)
       .call(d3.axisBottom(xScale).ticks(tickValues.length).tickFormat(d3.timeFormat('%I %p')));
-  
+    
     // Add thin marks for each hour without labels
     const allHourTicks = xScale.ticks(d3.timeHour.every(1));
     allHourTicks.forEach(tick => {
@@ -176,12 +182,12 @@ const AppV4 = () => {
           .attr('stroke-width', 1);
       }
     });
-  
+    
     // Draw the y-axis
     svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(yScale));
-  
+    
     // Draw the events with icons or text
     svg.selectAll('.event')
       .data(events)
@@ -196,11 +202,15 @@ const AppV4 = () => {
           .attr('y2', dimensions.height - margin.bottom)
           .attr('stroke', '#4444EF')
           .attr('stroke-width', 0.5);
-  
+    
         const eventGroup = g.append('g')
           .attr('transform', d => `translate(${xScale(d.time)}, ${dimensions.height - margin.bottom + 40})`)
           .attr('justify-content', 'center')
           .call(d3.drag()
+            .on('start', function (event, d) {
+              d3.select(this).classed('dragging', true);
+              mergedTooltip.style('opacity', 0);
+            })
             .on('drag', function (event, d) {
               const coords = d3.pointer(event, svg.node());
               const boundedX = Math.max(margin.left, Math.min(coords[0], dimensions.width - margin.right));
@@ -210,12 +220,37 @@ const AppV4 = () => {
               d.time = newTime;
               setEvents([...events]);
             })
-          );
-  
+            .on('end', function () {
+              d3.select(this).classed('dragging', false);
+            })
+          )
+          .on('mouseenter', function (event, d) {
+            d3.select(this).select('circle').attr('fill', '#4444AB');
+            d3.select(this).classed('hovered', true);
+    
+            mergedTooltip.transition()
+              .duration(200)
+              .style('opacity', .9);
+            mergedTooltip.html(d.activity.label)
+              .style('left', (event.pageX + 5) + 'px')
+              .style('top', (event.pageY - 28) + 'px');
+          })
+          .on('mouseleave', function () {
+            const eventGroup = d3.select(this);
+            if (!eventGroup.classed('dragging')) {
+              eventGroup.select('circle').attr('fill', '#4444EF');
+              eventGroup.classed('hovered', false);
+            }
+    
+            mergedTooltip.transition()
+              .duration(500)
+              .style('opacity', 0);
+          });
+    
         eventGroup.append('circle')
           .attr('r', 15)
           .attr('fill', '#4444EF');
-  
+    
         eventGroup.append('foreignObject')
           .attr('x', -15)
           .attr('y', -15)
@@ -225,17 +260,12 @@ const AppV4 = () => {
           .append('xhtml:div')
           .attr('class', 'event-icon-wrapper h-[30px] w-[30px] flex justify-center items-center')
           .html(d => ReactDOMServer.renderToString(d.activity.icon || <span>{d.activity.label}</span>));
-          
-  
+    
         eventGroup.append('title')
           .text(d => d.activity.label);
       });
-  };
+    };
   
-  
-  
-  
-
   useEffect(() => {
     updateChart();
   }, [events, simulationTime, mode, dimensions]);
@@ -280,7 +310,6 @@ const AppV4 = () => {
             {Object.entries(activities).map(([label, activity]) => (
               <div key={label} className="flex flex-col items-center">
                 <ActivityIcon label={label} activity={activity} onDrop={addEvent} />
-                <span className="text-sm md:text-base">{label}</span>
               </div>
             ))}
           </div>

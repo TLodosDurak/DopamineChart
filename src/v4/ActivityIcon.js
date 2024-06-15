@@ -24,10 +24,14 @@ const ActivityIcon = ({ label, activity, onDrop }) => {
   }, [activity, onDrop]);
 
   return (
-    <div ref={iconRef} className="bg-[#4444EF] text-white text-center justify-center flex w-[40px] h-[40px] p-2 m-4 rounded-full cursor-pointer flex-shrink-0 hover:bg-[#4444AB] hover:shadow-md hover:scale-150 transition-all active:shadow-none active:bg-[#4444EF]">
-      <div className="icon-wrapper">
+    <div ref={iconRef} className="bg-[#4444EF] text-black text-center justify-center flex-col w-[40px] h-[40px] p-2 m-4 rounded-full cursor-pointer flex-shrink-0 hover:bg-[#4444AB] hover:shadow-md hover:scale-150 transition-all active:shadow-none active:bg-[#4444EF]">
+      <div className="icon-wrapper mb-2">
         {activity.icon}
       </div>
+      <div className=" justify-center flex leading-3">
+        {activity.label}
+      </div>
+
     </div>
   );
 };
