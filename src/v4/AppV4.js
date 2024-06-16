@@ -249,7 +249,10 @@ const AppV4 = () => {
     
         eventGroup.append('circle')
           .attr('r', 15)
-          .attr('fill', '#4444EF');
+          .attr('fill', '#4444EF')
+          .attr('border', 'solid')
+          .attr('stroke', '#000000');
+
     
         eventGroup.append('foreignObject')
           .attr('x', -15)
@@ -278,7 +281,7 @@ const AppV4 = () => {
         </h1>
       </div>
       <div className="flex justify-center mb-4">
-        <button className="mr-4" onClick={() => setMode(mode === 'full' ? 'simulation' : 'full')}>
+        <button className="mr-4" disabled onClick={() => setMode(mode === 'full' ? 'simulation' : 'full')}>
           Switch to {mode === 'full' ? 'Simulation' : 'Full'} Mode
         </button>
         {mode === 'simulation' && (
