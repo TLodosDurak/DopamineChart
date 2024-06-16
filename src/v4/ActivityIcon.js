@@ -8,7 +8,7 @@ const ActivityIcon = ({ label, activity, onDrop }) => {
   useEffect(() => {
     const drag = d3.drag()
       .on('end', (event) => {
-        const svg = d3.select('svg');
+        const svg = d3.select('#main-svg');
         const coords = d3.pointer(event, svg.node());
         const svgWidth = svg.node().getBoundingClientRect().width;
         const margin = { left: 30, right: 30 }; // match with AppV4 margin
