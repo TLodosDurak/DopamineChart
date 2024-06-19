@@ -25,3 +25,15 @@
     pointer-events: none;
   }
   
+  .unselectable {
+    user-select: none;         /* Prevent text selection */
+  }
+  
+  /* For older browsers that might need vendor prefixes */
+  .unselectable {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* Internet Explorer/Edge */
+    user-select: none;         /* Non-prefixed version, currently supported by Chrome, Edge, Opera, Safari */
+  }
+  

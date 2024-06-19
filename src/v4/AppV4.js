@@ -171,7 +171,10 @@ const AppV4 = () => {
     const tickValues = xScale.ticks(d3.timeHour.every(tickInterval));
     svg.append('g')
       .attr('transform', `translate(0,${dimensions.height - margin.bottom})`)
-      .call(d3.axisBottom(xScale).ticks(tickValues.length).tickFormat(d3.timeFormat('%I %p')));
+      .call(d3.axisBottom(xScale).ticks(tickValues.length).tickFormat(d3.timeFormat('%I %p')))
+      .selectAll('text') // Select all text elements on the x-axis
+      .classed('unselectable', true);
+    
     
     // Add thin marks for each hour without labels
     const allHourTicks = xScale.ticks(d3.timeHour.every(1));
@@ -190,7 +193,10 @@ const AppV4 = () => {
     // Draw the y-axis
     svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(yScale));
+      .call(d3.axisLeft(yScale))
+      .selectAll('text') // Select all text elements on the x-axis
+      .classed('unselectable', true); // Add the unselectable class
+    
     
     // Draw the events with icons or text
     svg.selectAll('.event')
@@ -278,7 +284,7 @@ const AppV4 = () => {
   }, [events, simulationTime, mode, dimensions]);
 
   return (
-    <div className="container max-w-6xl mx-auto p-4 justify-center min-w-80 ">
+    <div className="container max-w-6xl mx-auto p-4 justify-center min-h-screen min-w-full">
       <div className="flex justify-center">
         <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-500 to-cyan-500 text-transparent bg-clip-text">
           Dopamine Baseline Chart
@@ -307,7 +313,7 @@ const AppV4 = () => {
       </div>
       <div className="lg:flex lg:justify-between">
         <div className="max-w-2xl mx-auto bg-white rounded-lg mb-4 p-8 border-2 border-[#4444EF] lg:w-2/5">
-          <h1 className="text-2xl font-bold text-start bg-gradient-to-r from-blue-500 to-cyan-500 text-transparent bg-clip-text box-border mb-4">
+          <h1 className="text-2xl font-bold text-start bg-gradient-to-r from-blue-500 to-cyan-500 text-transparent bg-clip-text box-border mb-4 tracking-tight">
             Stimuli
           </h1>
           <div className="flex flex-wrap justify-center align">
@@ -318,8 +324,8 @@ const AppV4 = () => {
             ))}
           </div>
         </div>
-        <div ref={containerRef} className="lg:w-3/5 flex items-center justify-center">
-          <svg id="main-svg" ref={svgRef} width={dimensions.width} height={dimensions.height}></svg>
+        <div ref={containerRef} className="flex lg:w-3/5 items-center justify-center">
+          <svg trace id="main-svg" ref={svgRef} width={dimensions.width} height={dimensions.height}></svg>
         </div>
       </div>
     </div>
